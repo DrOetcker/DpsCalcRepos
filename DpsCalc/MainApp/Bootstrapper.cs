@@ -1,10 +1,12 @@
 ﻿using System.Linq;
 using System.Windows;
+using Microsoft.Practices.ServiceLocation;
 using Microsoft.Practices.Unity;
+using Oetcker.Libs.Interfaces;
 using Oetcker.Libs.Services;
-using Oetcker.ServiceLocation;
 using Prism.Events;
 using Prism.Unity;
+
 
 namespace DpsCalc.MainApp
 {
@@ -39,7 +41,13 @@ namespace DpsCalc.MainApp
             base.ConfigureContainer();
 
             Container.Resolve<IEventAggregator>();
-            Container.RegisterType<IServiceLocator, ServiceLocatorService>(new ContainerControlledLifetimeManager());
+            Container.RegisterType<Oetcker.ServiceLocation.IServiceLocator, ServiceLocatorService>(new ContainerControlledLifetimeManager());
+            Container.RegisterType<IDatabaseService, DatabaseService>(new ContainerControlledLifetimeManager());
+
+            // TODO Probleme beim auflösen von services
+            // ServiceLocator. Current ist null
+            var dbService = ServiceLocator.Current.GetInstance<IDatabaseService>();
+
         }
 
         /// <summary>

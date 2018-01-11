@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Windows;
+using Oetcker.Libs.Interfaces;
+using Oetcker.ServiceLocation;
 
 namespace DpsCalc.MainApp
 {
