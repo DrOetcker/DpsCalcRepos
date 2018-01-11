@@ -1,6 +1,4 @@
-# DpsCalcRepos
-Repository für DpsCalc
-
+# DpsCalc - der Rouge... (Ja Rouge - cause we love Unicorns ;) ) ...DPS Calculator
 
 DpsCalc soll eine Hilfe für Schruken im Classic WoW darstellen.
 
@@ -13,3 +11,11 @@ https://docs.google.com/spreadsheets/d/1xXvd1MqLPqV463KtBp8v6dRGRZVL3sClwD-eXXLn
 
 Da innerhalb kurzer Zeit diverse Bugs und Verbesserungsansätze gefunden wurden, entschied ich mich dieses Tool zu entwickeln.
 In der Hoffnung, dass sich dieses Tool anständig entwickelt und so wird wie ich es mir erhoffe.
+
+
+
+
+Rogues are easy to play, but really hard to master. 
+
+Oetcker <Improved>
+Nefarian
