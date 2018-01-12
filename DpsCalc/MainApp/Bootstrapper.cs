@@ -7,7 +7,6 @@ using Oetcker.Libs.Services;
 using Prism.Events;
 using Prism.Unity;
 
-
 namespace DpsCalc.MainApp
 {
     public class Bootstrapper : UnityBootstrapper
@@ -43,11 +42,18 @@ namespace DpsCalc.MainApp
             Container.Resolve<IEventAggregator>();
             Container.RegisterType<Oetcker.ServiceLocation.IServiceLocator, ServiceLocatorService>(new ContainerControlledLifetimeManager());
             Container.RegisterType<IDatabaseService, DatabaseService>(new ContainerControlledLifetimeManager());
+            
 
-            // TODO Probleme beim auflösen von services
-            // ServiceLocator. Current ist null
-            var dbService = ServiceLocator.Current.GetInstance<IDatabaseService>();
+        }
 
+        /// <summary>
+        /// Configures the LocatorProvider for the <see cref="T:Microsoft.Practices.ServiceLocation.ServiceLocator" />.
+        /// </summary>
+        protected override void ConfigureServiceLocator()
+        {
+            base.ConfigureServiceLocator();
+            Oetcker.ServiceLocation.ServiceLocator.SetAction(() => ServiceLocator.Current.GetInstance<Oetcker.ServiceLocation.IServiceLocator>());
+            //var dbService = Oetcker.ServiceLocation.ServiceLocator.Current.GetInstance<IDatabaseService>();
         }
 
         /// <summary>
