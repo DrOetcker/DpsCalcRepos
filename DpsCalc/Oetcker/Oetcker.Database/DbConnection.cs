@@ -65,7 +65,7 @@ namespace Oetcker.Database
 
             if (IsNullOrEmpty(_databaseName))
                 return false;
-            var connstring = $"Server=localhost; database={_databaseName}; UID=root; toor";
+            var connstring = $"Server=localhost; database={_databaseName};uid=root;pwd=toor";
             _connection = new MySqlConnection(connstring);
             _connection.Open();
 
