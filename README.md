@@ -1,6 +1,6 @@
 # DpsCalc - der Rouge... (Ja Rouge - cause we love Unicorns ;) ) ...DPS Calculator
 
-DpsCalc soll eine Hilfe für Schruken im Classic WoW darstellen.
+DpsCalc soll eine Hilfe für Schurken im Classic WoW darstellen.
 
 Mit Zugriff auf das komplette Itemportfolio aus 1.12.1 ist es dem Schurken möglich seine DPS zu berechnen.
 Aufgrund von Rasse, Skillung, Equip und auch Buffs, können die DPS berechnet und ein Vergleich zwischen mehreren Itemssets generiert werden.
