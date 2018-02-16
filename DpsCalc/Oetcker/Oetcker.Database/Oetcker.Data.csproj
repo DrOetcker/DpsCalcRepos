@@ -7,8 +7,8 @@
     <ProjectGuid>{6BD0EAA5-0235-48ED-97F1-C6E9CE735645}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Oetcker.Database</RootNamespace>
-    <AssemblyName>Oetcker.Database</AssemblyName>
+    <RootNamespace>Oetcker.Data</RootNamespace>
+    <AssemblyName>Oetcker.Data</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -44,7 +44,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DbConnection.cs" />
+    <Compile Include="DebugData\DataCreator.cs" />
+    <Compile Include="PlayerService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="XmlSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -52,6 +55,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Interfaces\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Oetcker.Models\Oetcker.Models.csproj">
+      <Project>{7663FF03-8B06-461F-8E6B-156FB5DEEC88}</Project>
+      <Name>Oetcker.Models</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

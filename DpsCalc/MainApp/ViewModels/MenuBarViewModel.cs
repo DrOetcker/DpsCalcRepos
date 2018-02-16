@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Windows.Documents;
 using MySql.Data.MySqlClient;
+using Oetcker.Data.DebugData;
 using Oetcker.Gui;
 using Oetcker.Libs.Interfaces;
 using Oetcker.ServiceLocation;
@@ -24,6 +24,8 @@ namespace DpsCalc.MainApp.ViewModels
 
         #region Properties
 
+        public DelegateCommand CreateDebugDataCommand { get; private set; }
+
         /// <summary>
         /// Verbindet die Datenbank neu
         /// </summary>
@@ -39,6 +41,7 @@ namespace DpsCalc.MainApp.ViewModels
         private void CreateCommands()
         {
             ReconnectDatabaseCommand = new DelegateCommand(ReconnectDatabaseExecute, () => true);
+            CreateDebugDataCommand = new DelegateCommand(DataCreator.CreateDebugData, () => true);
         }
 
         /// <summary>
@@ -50,13 +53,15 @@ namespace DpsCalc.MainApp.ViewModels
             var conn = dbService.GetDbConnection();
             var query = "SELECT * FROM item_template";
             var cmd = new MySqlCommand(query, conn.Connection);
-            var reader = cmd.ExecuteReader();
             var result = new List<string>();
-            while (reader.Read())
+            using (var reader = cmd.ExecuteReader())
             {
-                result.Add(reader.GetString("name"));
-            }
+                while (reader.Read())
+                {
+                    result.Add(reader.GetString("name"));
+                }
 
+            }
         }
 
         #endregion

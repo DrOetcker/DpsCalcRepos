@@ -1,4 +1,5 @@
-﻿using Oetcker.Database;
+﻿using System;
+using Oetcker.Database;
 
 namespace Oetcker.Libs.Interfaces
 {
@@ -7,6 +8,7 @@ namespace Oetcker.Libs.Interfaces
         #region Methods
 
         DbConnection GetDbConnection();
+        Action ConnectionChange { get; set; }
 
         #endregion
     }

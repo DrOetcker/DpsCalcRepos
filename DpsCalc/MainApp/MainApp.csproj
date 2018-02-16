@@ -66,6 +66,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Wpf.6.3.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
@@ -87,7 +89,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ViewModels\ContentViewModel.cs" />
     <Compile Include="ViewModels\MenuBarViewModel.cs" />
+    <Compile Include="Views\ContentView.xaml.cs">
+      <DependentUpon>ContentView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\MenuBarView.xaml.cs">
       <DependentUpon>MenuBarView.xaml</DependentUpon>
     </Compile>
@@ -107,6 +113,10 @@
     <Page Include="Resources\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ContentView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MenuBarView.xaml">
       <SubType>Designer</SubType>
@@ -141,9 +151,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Oetcker\Oetcker.Database\Oetcker.Database.csproj">
+    <ProjectReference Include="..\Oetcker\Oetcker.Database\Oetcker.Data.csproj">
       <Project>{6bd0eaa5-0235-48ed-97f1-c6e9ce735645}</Project>
-      <Name>Oetcker.Database</Name>
+      <Name>Oetcker.Data</Name>
     </ProjectReference>
     <ProjectReference Include="..\Oetcker\Oetcker.Gui\Oetcker.Gui.csproj">
       <Project>{A19B140B-321F-4C07-BD0E-539311772DB0}</Project>
@@ -152,6 +162,10 @@
     <ProjectReference Include="..\Oetcker\Oetcker.Libs\Oetcker.Libs.csproj">
       <Project>{EFA9990A-B066-4D78-A7FE-B90540BACC22}</Project>
       <Name>Oetcker.Libs</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Oetcker\Oetcker.Models\Oetcker.Models.csproj">
+      <Project>{7663FF03-8B06-461F-8E6B-156FB5DEEC88}</Project>
+      <Name>Oetcker.Models</Name>
     </ProjectReference>
     <ProjectReference Include="..\Oetcker\Oetcker\Oetcker.csproj">
       <Project>{b1795fed-e92e-42da-ab42-4fdad18fdd3c}</Project>

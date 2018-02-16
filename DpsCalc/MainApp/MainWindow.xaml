@@ -9,5 +9,6 @@
         Title="MainWindow" Height="350" Width="525">
     <StackPanel>
         <views:MenuBarView></views:MenuBarView>
+        <views:ContentView></views:ContentView>
     </StackPanel>
 </Window>

@@ -21,6 +21,8 @@
             <MenuItem Header="Close" Command="{Binding CloseCommand}"></MenuItem>
         </MenuItem>
         <MenuItem Header="Optionen"></MenuItem>
-        <MenuItem Header="Hilfe"></MenuItem>
+        <MenuItem Header="Hilfe">
+            <MenuItem Header="CreateDebugData" Command="{Binding CreateDebugDataCommand}"></MenuItem>
+        </MenuItem>
     </Menu>
 </UserControl>

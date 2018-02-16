@@ -1,4 +1,5 @@
-﻿using Oetcker.Database;
+﻿using System;
+using Oetcker.Database;
 using Oetcker.Libs.Interfaces;
 
 namespace Oetcker.Libs.Services
@@ -11,11 +12,14 @@ namespace Oetcker.Libs.Services
         {
             var connection = DbConnection.Instance();
             connection.DatabaseName = "classicdb";
+            ConnectionChange?.Invoke();
             if (connection.IsConnect())
                 return connection;
 
             return null;
         }
+
+        public Action ConnectionChange { get; set; }
 
         #endregion
     }

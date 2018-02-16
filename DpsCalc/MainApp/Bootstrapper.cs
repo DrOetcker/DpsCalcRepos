@@ -42,8 +42,6 @@ namespace DpsCalc.MainApp
             Container.Resolve<IEventAggregator>();
             Container.RegisterType<Oetcker.ServiceLocation.IServiceLocator, ServiceLocatorService>(new ContainerControlledLifetimeManager());
             Container.RegisterType<IDatabaseService, DatabaseService>(new ContainerControlledLifetimeManager());
-            
-
         }
 
         /// <summary>

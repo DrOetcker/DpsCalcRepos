@@ -58,9 +58,9 @@
     <Compile Include="Services\ServiceLocatorService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Oetcker.Database\Oetcker.Database.csproj">
+    <ProjectReference Include="..\Oetcker.Database\Oetcker.Data.csproj">
       <Project>{6bd0eaa5-0235-48ed-97f1-c6e9ce735645}</Project>
-      <Name>Oetcker.Database</Name>
+      <Name>Oetcker.Data</Name>
     </ProjectReference>
     <ProjectReference Include="..\Oetcker\Oetcker.csproj">
       <Project>{b1795fed-e92e-42da-ab42-4fdad18fdd3c}</Project>
