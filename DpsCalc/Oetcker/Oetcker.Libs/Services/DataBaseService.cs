@@ -12,7 +12,6 @@ namespace Oetcker.Libs.Services
         {
             var connection = DbConnection.Instance();
             connection.DatabaseName = "classicdb";
-            ConnectionChange?.Invoke();
             if (connection.IsConnect())
                 return connection;
 

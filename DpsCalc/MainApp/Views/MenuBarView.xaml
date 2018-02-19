@@ -17,7 +17,7 @@
 
     <Menu >
         <MenuItem Header="File">
-            <MenuItem Header="Reconnect Database" Command="{Binding ReconnectDatabaseCommand}"></MenuItem>
+            <MenuItem Header="Reconnect ItemDatabase" Command="{Binding RebuildItemDatabaseCommand}"></MenuItem>
             <MenuItem Header="Close" Command="{Binding CloseCommand}"></MenuItem>
         </MenuItem>
         <MenuItem Header="Optionen"></MenuItem>

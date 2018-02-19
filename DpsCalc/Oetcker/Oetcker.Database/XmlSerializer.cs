@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -11,6 +8,7 @@ namespace Oetcker.Data
 {
     public static class XmlSerializer<T>
     {
+        #region Methods
 
         /// <summary>
         ///     Exportiert ausgelesene Daten in XML
@@ -30,12 +28,15 @@ namespace Oetcker.Data
             }
         }
 
+        /// <summary>
+        /// Diese Methode liefert den Inhalt einer XML-Datei zurück
+        /// </summary>
         public static T GetContent(string fileName)
         {
-            if (!File.Exists(@"Data\fileName.xml"))
-                return null;
+            if (!File.Exists($@"Data\{fileName}.xml"))
+                return default(T);
 
-            var reader = _xmlResourceService.GetXmlReader(SiriusCertifiedArticleXmlFile, SiriusCertifiedArticlePath);
+            var reader = XmlReader.Create($@"Data\{fileName}.xml");
             if (null == reader)
                 throw new Exception("No SiriusCertifiedArticle.xml found.");
             var serializer = new XmlSerializer(typeof(T));
@@ -43,5 +44,7 @@ namespace Oetcker.Data
             return siriusCertifiedArticles;
 
         }
+
+        #endregion
     }
 }

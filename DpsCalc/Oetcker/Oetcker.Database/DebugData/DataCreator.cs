@@ -35,12 +35,12 @@ namespace Oetcker.Data.DebugData
                     {
                         new PlayerItem
                         {
-                            Type = ItemContants.ItemType.WeaponOffhand,
+                            Type = ItemContants.ItemType.OffHand,
                             WeaponSlot = ItemContants.WeaponSlot.OffHand
                         },
                         new PlayerItem
                         {
-                            Type = ItemContants.ItemType.WeaponOneHand,
+                            Type = ItemContants.ItemType.MainHand,
                             WeaponSlot = ItemContants.WeaponSlot.MainHand
                         },
                         new PlayerItem
@@ -58,12 +58,12 @@ namespace Oetcker.Data.DebugData
                     {
                         new PlayerItem
                         {
-                            Type = ItemContants.ItemType.WeaponOffhand,
+                            Type = ItemContants.ItemType.OffHand,
                             WeaponSlot = ItemContants.WeaponSlot.OffHand
                         },
                         new PlayerItem
                         {
-                            Type = ItemContants.ItemType.WeaponOneHand,
+                            Type = ItemContants.ItemType.MainHand,
                             WeaponSlot = ItemContants.WeaponSlot.MainHand
                         },
                         new PlayerItem
