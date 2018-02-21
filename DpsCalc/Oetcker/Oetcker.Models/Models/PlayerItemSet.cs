@@ -8,7 +8,7 @@ namespace Oetcker.Models.Models
         #region Properties
 
         public Guid Id { get; set; }
-        public List<PlayerItem> PlayerItems { get; set; }
+        public List<Item> PlayerItems { get; set; }
         public string Name { get; set; }
 
         #endregion

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Xml.Serialization;
 using Oetcker.Models.Constants;
 using Oetcker.Models.Models;
 
@@ -25,52 +27,57 @@ namespace Oetcker.Data.DebugData
 
         private static void CreateDebugPlayerItemSets(Guid currentGuid)
         {
+            var allItems = XmlSerializer<List<Item>>.GetContent("Items");
             var playerItemSets = new List<PlayerItemSet>
             {
                 new PlayerItemSet
                 {
                     Name = "Current",
                     Id = currentGuid,
-                    PlayerItems = new List<PlayerItem>
+                    PlayerItems = new List<Item>
                     {
-                        new PlayerItem
-                        {
-                            Type = ItemContants.ItemType.OffHand,
-                            WeaponSlot = ItemContants.WeaponSlot.OffHand
-                        },
-                        new PlayerItem
-                        {
-                            Type = ItemContants.ItemType.MainHand,
-                            WeaponSlot = ItemContants.WeaponSlot.MainHand
-                        },
-                        new PlayerItem
-                        {
-                            Type = ItemContants.ItemType.Head,
-                            WeaponSlot = ItemContants.WeaponSlot.OffHand
-                        }
+                        allItems.FirstOrDefault(item => item.Type == ItemContants.ItemType.Head),
+                        allItems.FirstOrDefault(item => item.Type == ItemContants.ItemType.Neck),
+                        allItems.FirstOrDefault(item => item.Type == ItemContants.ItemType.Shoulder),
+                        allItems.FirstOrDefault(item => item.Type == ItemContants.ItemType.Back),
+                        allItems.FirstOrDefault(item => item.Type == ItemContants.ItemType.Chest),
+                        allItems.FirstOrDefault(item => item.Type == ItemContants.ItemType.Wrists),
+                        allItems.FirstOrDefault(item => item.Type == ItemContants.ItemType.Hands),
+                        allItems.FirstOrDefault(item => item.Type == ItemContants.ItemType.Waist),
+                        allItems.FirstOrDefault(item => item.Type == ItemContants.ItemType.Legs),
+                        allItems.FirstOrDefault(item => item.Type == ItemContants.ItemType.Feet),
+                        allItems.FirstOrDefault(item => item.Type == ItemContants.ItemType.Finger),
+                        allItems.FirstOrDefault(item => item.Type == ItemContants.ItemType.Finger),
+                        allItems.FirstOrDefault(item => item.Type == ItemContants.ItemType.Trinket),
+                        allItems.FirstOrDefault(item => item.Type == ItemContants.ItemType.Trinket),
+                        allItems.FirstOrDefault(item => item.Type == ItemContants.ItemType.MainHand),
+                        allItems.FirstOrDefault(item => item.Type == ItemContants.ItemType.OffHand),
+                        allItems.FirstOrDefault(item => item.Type == ItemContants.ItemType.Ranged)
                     }
                 },
                 new PlayerItemSet
                 {
                     Name = "End",
                     Id = Guid.NewGuid(),
-                    PlayerItems = new List<PlayerItem>
+                    PlayerItems = new List<Item>
                     {
-                        new PlayerItem
-                        {
-                            Type = ItemContants.ItemType.OffHand,
-                            WeaponSlot = ItemContants.WeaponSlot.OffHand
-                        },
-                        new PlayerItem
-                        {
-                            Type = ItemContants.ItemType.MainHand,
-                            WeaponSlot = ItemContants.WeaponSlot.MainHand
-                        },
-                        new PlayerItem
-                        {
-                            Type = ItemContants.ItemType.Head,
-                            WeaponSlot = ItemContants.WeaponSlot.OffHand
-                        }
+                        allItems.LastOrDefault(item => item.Type == ItemContants.ItemType.Head),
+                        allItems.LastOrDefault(item => item.Type == ItemContants.ItemType.Neck),
+                        allItems.LastOrDefault(item => item.Type == ItemContants.ItemType.Shoulder),
+                        allItems.LastOrDefault(item => item.Type == ItemContants.ItemType.Back),
+                        allItems.LastOrDefault(item => item.Type == ItemContants.ItemType.Chest),
+                        allItems.LastOrDefault(item => item.Type == ItemContants.ItemType.Wrists),
+                        allItems.LastOrDefault(item => item.Type == ItemContants.ItemType.Hands),
+                        allItems.LastOrDefault(item => item.Type == ItemContants.ItemType.Waist),
+                        allItems.LastOrDefault(item => item.Type == ItemContants.ItemType.Legs),
+                        allItems.LastOrDefault(item => item.Type == ItemContants.ItemType.Feet),
+                        allItems.LastOrDefault(item => item.Type == ItemContants.ItemType.Finger),
+                        allItems.LastOrDefault(item => item.Type == ItemContants.ItemType.Finger),
+                        allItems.LastOrDefault(item => item.Type == ItemContants.ItemType.Trinket),
+                        allItems.LastOrDefault(item => item.Type == ItemContants.ItemType.Trinket),
+                        allItems.LastOrDefault(item => item.Type == ItemContants.ItemType.MainHand),
+                        allItems.LastOrDefault(item => item.Type == ItemContants.ItemType.OffHand),
+                        allItems.LastOrDefault(item => item.Type == ItemContants.ItemType.Ranged)
                     }
                 }
             };
