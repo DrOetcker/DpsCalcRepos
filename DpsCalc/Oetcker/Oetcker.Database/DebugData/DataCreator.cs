@@ -22,7 +22,7 @@ namespace Oetcker.Data.DebugData
                 Name = "Oetcker",
                 CurrentItemSet = currentGuid
             };
-            XmlSerializer<Player>.ExportToXml(player, "Player");
+            XmlSerializer<List<Player>>.ExportToXml(new List<Player> { player }, "Players");
         }
 
         private static void CreateDebugPlayerItemSets(Guid currentGuid)

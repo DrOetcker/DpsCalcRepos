@@ -13,6 +13,8 @@ namespace DpsCalc.MainApp.ViewModels
 {
     public class MenuBarViewModel : ViewModelBase
     {
+        private List<Player> _players;
+
         #region Constructors
 
         /// <summary>
@@ -21,6 +23,14 @@ namespace DpsCalc.MainApp.ViewModels
         public MenuBarViewModel()
         {
             CreateCommands();
+            LoadPlayerFiles();
+        }
+
+        private void LoadPlayerFiles()
+        {
+            Players=XmlSerializer<List<Player>>.GetContent("Players");
+            RaisePropertyChanged(() => Players);
+
         }
 
         #endregion
@@ -28,6 +38,8 @@ namespace DpsCalc.MainApp.ViewModels
         #region Properties
 
         public DelegateCommand CreateDebugDataCommand { get; private set; }
+        public DelegateCommand<string> LoadPlayerCommand { get; private set; }
+        public DelegateCommand CreatePlayerCommand { get; private set; }
 
         /// <summary>
         /// Verbindet die Datenbank neu
@@ -45,6 +57,17 @@ namespace DpsCalc.MainApp.ViewModels
         {
             RebuildItemDatabaseCommand = new DelegateCommand(RebuildWeaponDatabaseExecute, () => true);
             CreateDebugDataCommand = new DelegateCommand(DataCreator.CreateDebugData, () => true);
+            LoadPlayerCommand = new DelegateCommand<string>(OnLoadPlayerCommand, (string name) => true);
+            CreatePlayerCommand = new DelegateCommand(OnCreatePlayerCommand, () => true);
+        }
+
+        public List<Player> Players { get; set; }
+        private void OnCreatePlayerCommand()
+        {       
+        }
+
+        private void OnLoadPlayerCommand(string s)
+        {
         }
 
         /// <summary>
