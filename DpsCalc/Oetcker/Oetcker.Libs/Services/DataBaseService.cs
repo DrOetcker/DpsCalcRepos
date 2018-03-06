@@ -11,7 +11,7 @@ namespace Oetcker.Libs.Services
         public DbConnection GetDbConnection()
         {
             var connection = DbConnection.Instance();
-            connection.DatabaseName = "mangos";
+            connection.DatabaseName = "world";
             if (connection.IsConnect())
                 return connection;
 

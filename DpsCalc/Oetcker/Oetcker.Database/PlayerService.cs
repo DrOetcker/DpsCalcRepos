@@ -1,4 +1,5 @@
-﻿using Oetcker.Models.Models;
+﻿using System.Collections.Generic;
+using Oetcker.Models.Models;
 
 namespace Oetcker.Data
 {
@@ -6,7 +7,7 @@ namespace Oetcker.Data
     {
         #region Staticfields and Constants
 
-        private static Player _player;
+        private static List<Player> _player;
 
         #endregion
 
@@ -16,9 +17,9 @@ namespace Oetcker.Data
         /// Diese Methode liefert den gespeicherten Spieler zurück
         /// </summary>
         /// <returns></returns>
-        public static Player GetPlayer()
+        public static List<Player> GetPlayers()
         {
-            _player = XmlSerializer<Player>.GetContent("Player");
+            _player = XmlSerializer<List<Player>>.GetContent("Players");
             return _player;
         }
 

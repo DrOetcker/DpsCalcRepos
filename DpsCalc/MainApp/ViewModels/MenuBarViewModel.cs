@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Controls;
 using MySql.Data.MySqlClient;
 using Oetcker.Data;
 using Oetcker.Data.DebugData;
+using Oetcker.Database;
 using Oetcker.Gui;
 using Oetcker.Libs.Interfaces;
 using Oetcker.Models.Constants;
@@ -28,7 +31,7 @@ namespace DpsCalc.MainApp.ViewModels
 
         private void LoadPlayerFiles()
         {
-            Players=XmlSerializer<List<Player>>.GetContent("Players");
+            Players = XmlSerializer<List<Player>>.GetContent("Players");
             RaisePropertyChanged(() => Players);
 
         }
@@ -38,6 +41,7 @@ namespace DpsCalc.MainApp.ViewModels
         #region Properties
 
         public DelegateCommand CreateDebugDataCommand { get; private set; }
+        public DelegateCommand LoadDbDataCommand { get; private set; }
         public DelegateCommand<string> LoadPlayerCommand { get; private set; }
         public DelegateCommand CreatePlayerCommand { get; private set; }
 
@@ -59,11 +63,26 @@ namespace DpsCalc.MainApp.ViewModels
             CreateDebugDataCommand = new DelegateCommand(DataCreator.CreateDebugData, () => true);
             LoadPlayerCommand = new DelegateCommand<string>(OnLoadPlayerCommand, (string name) => true);
             CreatePlayerCommand = new DelegateCommand(OnCreatePlayerCommand, () => true);
+            LoadDbDataCommand = new DelegateCommand(OnLoadDbDataCommand, () => true);
+        }
+
+        private void OnLoadDbDataCommand()
+        {
+            var dbService = ServiceLocator.Current.GetInstance<IDatabaseService>();
+            var conn = dbService.GetDbConnection();
+            var query = "select * from item_template Where entry = 18823";
+            var cmd = new MySqlCommand(query, conn.Connection);
+            using (var reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                }
+            }
         }
 
         public List<Player> Players { get; set; }
         private void OnCreatePlayerCommand()
-        {       
+        {
         }
 
         private void OnLoadPlayerCommand(string s)
@@ -102,7 +121,7 @@ namespace DpsCalc.MainApp.ViewModels
                         Name = reader.GetString("Name"),
                         Speed = reader.GetInt32("delay"),
                         Quality = (ItemContants.Quality)quality,
-                        WeaponClass = itemClass != 2? 0 : (ItemContants.WeaponClass)itemSubClass,
+                        WeaponClass = itemClass != 2 ? 0 : (ItemContants.WeaponClass)itemSubClass,
                         Type = (ItemContants.ItemType)inventoryType
                     };
 
@@ -111,8 +130,41 @@ namespace DpsCalc.MainApp.ViewModels
                 }
 
             }
+            GetSpells(result, conn);
             XmlSerializer<List<Item>>.ExportToXml(result, "Items");
             dbService.ConnectionChange?.Invoke();
+        }
+
+        private void GetSpells(List<Item> items, DbConnection conn)
+        {
+            var query = "SELECT * FROM dbc_spell";
+            var cmd = new MySqlCommand(query, conn.Connection);
+            const string effectauraColumn = "effectAura";
+            const string effectBasePointsColumn = "effectBasePoints";
+            const string nameColumn = "Name";
+            using (var reader = cmd.ExecuteReader())
+            {
+                foreach (var item in items)
+                {
+                    while (reader.Read())
+                    {
+                        var id = reader.GetInt32("Id");
+                        for (var i = 1; i <= 3; i++)
+                        {
+                            var effectAura = reader.GetInt32(effectauraColumn + i);
+                            var effectBasePoints = reader.GetInt32(effectBasePointsColumn + i);
+                            var name = reader.GetString(nameColumn + i);
+                            var itemToEdit = item.Spells.FirstOrDefault(sp => sp.Id == id);
+                            if (itemToEdit != null)
+                            {
+                                itemToEdit.Name = name;
+                                itemToEdit.EffectAura = effectAura;
+                                itemToEdit.EffectBasePoints = effectBasePoints;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private void GetStats(Item item, MySqlDataReader reader)
@@ -131,6 +183,21 @@ namespace DpsCalc.MainApp.ViewModels
                     item.Strength = redValue;
                 else if (redType == 7)
                     item.Stamina = redValue;
+            }
+
+            //Spells:
+            const string spellidColumn = "spellid_";
+            const string spelltriggerColumn = "spelltrigger_";
+            for (var i = 1; i <= 3; i++)
+            {
+                //Kein Instant -> Wayne
+                var redValue = reader.GetInt32(spelltriggerColumn + i);
+                if (redValue != 1)
+                    continue;
+                var spellId = reader.GetInt32(spellidColumn + i);
+                if (redValue == 0)
+                    continue;
+                item.Spells.Add(new Spell(spellId));
             }
         }
 

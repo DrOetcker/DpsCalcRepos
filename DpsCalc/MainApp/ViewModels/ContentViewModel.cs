@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Windows.Documents;
 using MySql.Data.MySqlClient;
@@ -27,13 +28,15 @@ namespace DpsCalc.MainApp.ViewModels
 
         private void asdf()
         {
-            var player = PlayerService.GetPlayer();
+            var player = PlayerService.GetPlayers()?.First();
             if (null == player)
                 return;
             Test = player.Name + Environment.NewLine;
             Test += ItemService.GetCurrentItemSet(player.CurrentItemSet).Name + Environment.NewLine;
             var allItems = ItemService.GetAllItems();
             Test += allItems[new Random(DateTime.Now.Millisecond).Next(0, allItems.Count - 1)].ToString();
+            Test += allItems[new Random(DateTime.Now.Millisecond).Next(0, allItems.Count - 1)].ToString();
+            Test += allItems.First(item => item.Id== 18823).ToString();
         }
 
         #endregion

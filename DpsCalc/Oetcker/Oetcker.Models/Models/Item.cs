@@ -1,4 +1,6 @@
-﻿using System.Xml.Serialization;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Xml.Serialization;
 
 namespace Oetcker.Models.Models
 {
@@ -49,13 +51,16 @@ namespace Oetcker.Models.Models
         [XmlElement(ElementName = "id")]
         public int Id { get; set; }
 
+        [XmlElement(ElementName = "sp")]
+        public List<Spell> Spells { get; set; } = new List<Spell>();
+
         #endregion
 
         #region Methods
 
         public override string ToString()
         {
-            return $"{Name}\r\n{Quality}\r\n{Type}\r\n{Speed / 1000}";
+            return $"{Name}\r\n{Quality}\r\n{Type}\r\n{Speed / 1000}\r\n{string.Join(",", Spells.Select(sp => sp.Name))}";
         }
 
         #endregion
