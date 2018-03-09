@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Controls;
 using MySql.Data.MySqlClient;
 using Oetcker.Data;
 using Oetcker.Data.DebugData;
@@ -16,7 +15,11 @@ namespace DpsCalc.MainApp.ViewModels
 {
     public class MenuBarViewModel : ViewModelBase
     {
+        #region Fields
+
         private List<Player> _players;
+
+        #endregion
 
         #region Constructors
 
@@ -29,26 +32,22 @@ namespace DpsCalc.MainApp.ViewModels
             LoadPlayerFiles();
         }
 
-        private void LoadPlayerFiles()
-        {
-            Players = XmlSerializer<List<Player>>.GetContent("Players");
-            RaisePropertyChanged(() => Players);
-
-        }
-
         #endregion
 
         #region Properties
 
         public DelegateCommand CreateDebugDataCommand { get; private set; }
-        public DelegateCommand LoadDbDataCommand { get; private set; }
-        public DelegateCommand<string> LoadPlayerCommand { get; private set; }
         public DelegateCommand CreatePlayerCommand { get; private set; }
+        public DelegateCommand<string> LoadPlayerCommand { get; private set; }
+
+        public List<Player> Players { get; set; }
 
         /// <summary>
         /// Verbindet die Datenbank neu
         /// </summary>
         public DelegateCommand RebuildItemDatabaseCommand { get; private set; }
+
+        public DelegateCommand ReloadDatabaseCommand { get; private set; }
 
         #endregion
 
@@ -63,24 +62,107 @@ namespace DpsCalc.MainApp.ViewModels
             CreateDebugDataCommand = new DelegateCommand(DataCreator.CreateDebugData, () => true);
             LoadPlayerCommand = new DelegateCommand<string>(OnLoadPlayerCommand, (string name) => true);
             CreatePlayerCommand = new DelegateCommand(OnCreatePlayerCommand, () => true);
-            LoadDbDataCommand = new DelegateCommand(OnLoadDbDataCommand, () => true);
+            ReloadDatabaseCommand = new DelegateCommand(OnReloadDatabaseCommand, () => true);
         }
 
-        private void OnLoadDbDataCommand()
+        private void GetSpells(List<Item> items, List<Spell> spells)
         {
-            var dbService = ServiceLocator.Current.GetInstance<IDatabaseService>();
-            var conn = dbService.GetDbConnection();
-            var query = "select * from item_template Where entry = 18823";
+            if (null == spells)
+                return;
+            foreach (var item in items)
+            {
+                if (!item.Spells.Any())
+                    continue;
+                item.Spells = item.Spells.Select(sp =>
+                {
+                    var foundSpell = spells.FirstOrDefault(spell => spell.Id == sp.Id);
+                    return foundSpell;
+                }).ToList();
+            }
+        }
+
+        private List<Spell> GetSpellsContent(DbConnection conn)
+        {
+            var query = "SELECT * FROM dbc_spell";
             var cmd = new MySqlCommand(query, conn.Connection);
+            const string effectauraColumn = "effectAura";
+            const string effectBasePointsColumn = "effectBasePoints";
+            const string nameColumn = "Name";
+            var result = new List<Spell>();
             using (var reader = cmd.ExecuteReader())
             {
                 while (reader.Read())
                 {
+                    var id = reader.GetInt32("Id");
+                    var name = reader.GetString(nameColumn);
+                    for (var i = 1; i <= 3; i++)
+                    {
+                        var effectAura = reader.GetInt32(effectauraColumn + i);
+                        var effectBasePoints = reader.GetInt32(effectBasePointsColumn + i);
+                        if (effectAura != 0)
+                            result.Add(new Spell(id, name, effectAura, effectBasePoints + 1));
+                    }
                 }
+            }
+            return result;
+
+        }
+
+        private void GetStats(Item item, MySqlDataReader reader)
+        {
+            //Armor
+            item.Stats.Add(new StatKeyValuePair<ItemContants.Stat, int>(ItemContants.Stat.Armor, reader.GetInt32("armor")));
+
+            //Stats
+            const string type = "stat_type";
+            const string value = "stat_value";
+            for (var i = 1; i <= 10; i++)
+            {
+                var redValue = reader.GetInt32(value + i);
+                if (redValue == 0)
+                    continue;
+                var redType = reader.GetInt32(type + i);
+                item.Stats.Add(new StatKeyValuePair<ItemContants.Stat, int>((ItemContants.Stat)redType, redValue));
+            }
+
+            //DMG
+            if (item.IsWeapon())
+            {
+                item.DmgMin = reader.GetInt32("dmg_min1");
+                item.DmgMax = reader.GetInt32("dmg_max1");
+            }
+
+            //Resistance
+            item.Stats.Add(new StatKeyValuePair<ItemContants.Stat, int>(ItemContants.Stat.ResistanceArcane, reader.GetInt32("arcane_res")));
+            item.Stats.Add(new StatKeyValuePair<ItemContants.Stat, int>(ItemContants.Stat.ResistanceFire, reader.GetInt32("fire_res")));
+            item.Stats.Add(new StatKeyValuePair<ItemContants.Stat, int>(ItemContants.Stat.ResistanceFrost, reader.GetInt32("frost_res")));
+            item.Stats.Add(new StatKeyValuePair<ItemContants.Stat, int>(ItemContants.Stat.ResistanceHoly, reader.GetInt32("holy_res")));
+            item.Stats.Add(new StatKeyValuePair<ItemContants.Stat, int>(ItemContants.Stat.ResistanceNature, reader.GetInt32("nature_res")));
+            item.Stats.Add(new StatKeyValuePair<ItemContants.Stat, int>(ItemContants.Stat.ResistanceShadow, reader.GetInt32("shadow_res")));
+
+            //Spells:
+            const string spellidColumn = "spellid_";
+            const string spelltriggerColumn = "spelltrigger_";
+            for (var i = 1; i <= 3; i++)
+            {
+                //Kein Instant -> Wayne
+                var spelltrigger = reader.GetInt32(spelltriggerColumn + i);
+                if (spelltrigger != 1)
+                    continue;
+                var spellId = reader.GetInt32(spellidColumn + i);
+                if (spellId == 0)
+                    continue;
+                item.Spells.Add(new Spell(spellId));
             }
         }
 
-        public List<Player> Players { get; set; }
+        private void LoadPlayerFiles()
+        {
+            Players = XmlSerializer<List<Player>>.GetContent("Players");
+            RaisePropertyChanged(() => Players);
+
+        }
+
         private void OnCreatePlayerCommand()
         {
         }
@@ -89,13 +171,21 @@ namespace DpsCalc.MainApp.ViewModels
         {
         }
 
+        private void OnReloadDatabaseCommand()
+        {
+            var dbService = ServiceLocator.Current.GetInstance<IDatabaseService>();
+            dbService.ConnectionChange?.Invoke();
+        }
+
         /// <summary>
         /// Diese Methode wird aufgerufen, wenn der ReconnectDatabaseCommand gestartet wird
         /// </summary>
         private void RebuildWeaponDatabaseExecute()
         {
+
             var dbService = ServiceLocator.Current.GetInstance<IDatabaseService>();
             var conn = dbService.GetDbConnection();
+            var spells = GetSpellsContent(conn);
             var query = "SELECT * FROM item_template";
             var cmd = new MySqlCommand(query, conn.Connection);
             var result = new List<Item>();
@@ -130,75 +220,10 @@ namespace DpsCalc.MainApp.ViewModels
                 }
 
             }
-            GetSpells(result, conn);
+            GetSpells(result, spells);
             XmlSerializer<List<Item>>.ExportToXml(result, "Items");
+            ItemService.ResetCache();
             dbService.ConnectionChange?.Invoke();
-        }
-
-        private void GetSpells(List<Item> items, DbConnection conn)
-        {
-            var query = "SELECT * FROM dbc_spell";
-            var cmd = new MySqlCommand(query, conn.Connection);
-            const string effectauraColumn = "effectAura";
-            const string effectBasePointsColumn = "effectBasePoints";
-            const string nameColumn = "Name";
-            using (var reader = cmd.ExecuteReader())
-            {
-                foreach (var item in items)
-                {
-                    while (reader.Read())
-                    {
-                        var id = reader.GetInt32("Id");
-                        for (var i = 1; i <= 3; i++)
-                        {
-                            var effectAura = reader.GetInt32(effectauraColumn + i);
-                            var effectBasePoints = reader.GetInt32(effectBasePointsColumn + i);
-                            var name = reader.GetString(nameColumn + i);
-                            var itemToEdit = item.Spells.FirstOrDefault(sp => sp.Id == id);
-                            if (itemToEdit != null)
-                            {
-                                itemToEdit.Name = name;
-                                itemToEdit.EffectAura = effectAura;
-                                itemToEdit.EffectBasePoints = effectBasePoints;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        private void GetStats(Item item, MySqlDataReader reader)
-        {
-            const string type = "stat_type";
-            const string value = "stat_value";
-            for (var i = 1; i <= 10; i++)
-            {
-                var redValue = reader.GetInt32(value + i);
-                if (redValue == 0)
-                    continue;
-                var redType = reader.GetInt32(type + i);
-                if (redType == 3)
-                    item.Agility = redValue;
-                else if (redType == 4)
-                    item.Strength = redValue;
-                else if (redType == 7)
-                    item.Stamina = redValue;
-            }
-
-            //Spells:
-            const string spellidColumn = "spellid_";
-            const string spelltriggerColumn = "spelltrigger_";
-            for (var i = 1; i <= 3; i++)
-            {
-                //Kein Instant -> Wayne
-                var redValue = reader.GetInt32(spelltriggerColumn + i);
-                if (redValue != 1)
-                    continue;
-                var spellId = reader.GetInt32(spellidColumn + i);
-                if (redValue == 0)
-                    continue;
-                item.Spells.Add(new Spell(spellId));
-            }
         }
 
         #endregion

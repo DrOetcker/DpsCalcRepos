@@ -36,13 +36,13 @@ namespace Oetcker.Data
             if (!File.Exists($@"Data\{fileName}.xml"))
                 return default(T);
 
-            var reader = XmlReader.Create($@"Data\{fileName}.xml");
-            if (null == reader)
-                throw new Exception("No SiriusCertifiedArticle.xml found.");
-            var serializer = new XmlSerializer(typeof(T));
-            var siriusCertifiedArticles = (T)serializer.Deserialize(reader);
-            return siriusCertifiedArticles;
-
+            using (var reader = XmlReader.Create($@"Data\{fileName}.xml"))
+            {
+                if (null == reader)
+                    throw new Exception("No SiriusCertifiedArticle.xml found.");
+                var serializer = new XmlSerializer(typeof(T));
+                return (T)serializer.Deserialize(reader);
+            }
         }
 
         #endregion

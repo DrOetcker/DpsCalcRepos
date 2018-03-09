@@ -23,10 +23,10 @@ namespace DpsCalc.MainApp.ViewModels
         /// </summary>
         public ContentViewModel()
         {
-            ServiceLocator.Current.GetInstance<IDatabaseService>().ConnectionChange += asdf;
+            ServiceLocator.Current.GetInstance<IDatabaseService>().ConnectionChange += LoadPlayer;
         }
 
-        private void asdf()
+        private void LoadPlayer()
         {
             var player = PlayerService.GetPlayers()?.First();
             if (null == player)
@@ -34,8 +34,9 @@ namespace DpsCalc.MainApp.ViewModels
             Test = player.Name + Environment.NewLine;
             Test += ItemService.GetCurrentItemSet(player.CurrentItemSet).Name + Environment.NewLine;
             var allItems = ItemService.GetAllItems();
-            Test += allItems[new Random(DateTime.Now.Millisecond).Next(0, allItems.Count - 1)].ToString();
-            Test += allItems[new Random(DateTime.Now.Millisecond).Next(0, allItems.Count - 1)].ToString();
+            var rand = new Random(DateTime.Now.Millisecond);
+            Test += allItems[rand.Next(0, allItems.Count - 1)].ToString();
+            Test += allItems[rand.Next(0, allItems.Count - 1)].ToString();
             Test += allItems.First(item => item.Id== 18823).ToString();
         }
 

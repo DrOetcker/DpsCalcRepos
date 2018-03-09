@@ -57,5 +57,27 @@ namespace Oetcker.Models.Constants
             Dagger = 15,
             Crossbow = 18
         }
+
+        public enum Stat
+        {
+            Mana = 0,
+            Health = 1,
+            Agility = 3,
+            Strength = 4,
+            Intellect = 5,
+            Spirit = 6,
+            Stamina = 7,
+            DefenseRating = 12,
+            DodgeRating = 13,
+            ParryRating = 14,
+            BlockRating = 15,
+            Armor=16,
+            ResistanceHoly=17,
+            ResistanceFire=18,
+            ResistanceNature=19,
+            ResistanceFrost=20,
+            ResistanceShadow=21,
+            ResistanceArcane=22,
+        }
     }
 }

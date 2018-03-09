@@ -26,6 +26,11 @@ namespace Oetcker.Data
             return _items ?? (_items = XmlSerializer<List<Item>>.GetContent("Items"));
         }
 
+        public static void ResetCache()
+        {
+            _items = null;
+        }
+
         #endregion
     }
 }
