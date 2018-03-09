@@ -1,20 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Windows.Documents;
-using MySql.Data.MySqlClient;
 using Oetcker.Data;
 using Oetcker.Gui;
 using Oetcker.Libs.Interfaces;
+using Oetcker.Models.Models;
 using Oetcker.ServiceLocation;
-using Prism.Commands;
 
 namespace DpsCalc.MainApp.ViewModels
 {
     public class ContentViewModel : ViewModelBase
     {
+        #region Fields
+
+        private Player _currentPlayer;
+
         private string _test;
+        private PlayerItemSet _currentItemSet;
+        private List<Item> _allItems;
+
+        #endregion
 
         #region Constructors
 
@@ -23,26 +28,44 @@ namespace DpsCalc.MainApp.ViewModels
         /// </summary>
         public ContentViewModel()
         {
-            ServiceLocator.Current.GetInstance<IDatabaseService>().ConnectionChange += LoadPlayer;
-        }
-
-        private void LoadPlayer()
-        {
-            var player = PlayerService.GetPlayers()?.First();
-            if (null == player)
-                return;
-            Test = player.Name + Environment.NewLine;
-            Test += ItemService.GetCurrentItemSet(player.CurrentItemSet).Name + Environment.NewLine;
-            var allItems = ItemService.GetAllItems();
-            var rand = new Random(DateTime.Now.Millisecond);
-            Test += allItems[rand.Next(0, allItems.Count - 1)].ToString();
-            Test += allItems[rand.Next(0, allItems.Count - 1)].ToString();
-            Test += allItems.First(item => item.Id== 18823).ToString();
+            ServiceLocator.Current.GetInstance<IDatabaseService>().ConnectionChange += LoadItems;
+            PlayerService.CurrentPlayerChanged += OnPlayerChanged;
+            AllItems = ItemService.GetAllItems();
         }
 
         #endregion
 
         #region Properties
+
+        public List<Item> AllItems
+        {
+            get => _allItems;
+            set
+            {
+                _allItems = value;
+                RaisePropertyChanged(() => AllItems);
+            }
+        }
+
+        public Player CurrentPlayer
+        {
+            get => _currentPlayer;
+            set
+            {
+                _currentPlayer = value;
+                RaisePropertyChanged(() => CurrentPlayer);
+            }
+        }
+
+        public PlayerItemSet CurrentItemSet
+        {
+            get => _currentItemSet;
+            set
+            {
+                _currentItemSet = value;
+                RaisePropertyChanged(() => CurrentItemSet);
+            }
+        }
 
         public string Test
         {
@@ -58,6 +81,26 @@ namespace DpsCalc.MainApp.ViewModels
 
         #region Methods
 
+        private void LoadItems()
+        {
+            AllItems = ItemService.GetAllItems();
+            var rand = new Random(DateTime.Now.Millisecond);
+            Test += AllItems[rand.Next(0, AllItems.Count - 1)].ToString();
+            Test += AllItems[rand.Next(0, AllItems.Count - 1)].ToString();
+            Test += AllItems.First(item => item.Id == 18823).ToString();
+        }
+
+        private void OnPlayerChanged(Player player)
+        {
+            if (null == player)
+                return;
+            CurrentPlayer = player;
+            CurrentItemSet = ItemService.GetCurrentItemSet(player.CurrentItemSet);
+            Test = player.Name + Environment.NewLine;
+            Test += CurrentItemSet.Name + Environment.NewLine;
+            //currentItemSet.PlayerItems.ForEach(pi => { Test += pi.ToString(); });
+
+        }
 
         #endregion
     }

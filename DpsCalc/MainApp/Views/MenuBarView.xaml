@@ -22,13 +22,13 @@
             <MenuItem Header="Close" Command="{Binding CloseCommand}"></MenuItem>
         </MenuItem>
         <MenuItem Header="Load Player" ItemsSource="{Binding Players}" x:Name="MenuItem">
-            <!--<MenuItem.ItemContainerStyle TargetType="{x:Type MenuItem}">
+            <MenuItem.ItemContainerStyle>
                 <Style TargetType="{x:Type MenuItem}">
                     <Setter Property="Header" Value="{Binding Name}"/>
                     <Setter Property="Command" Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Path=DataContext.LoadPlayerCommand}" />
                     <Setter Property="CommandParameter" Value="{Binding Name}" />
                 </Style>
-            </MenuItem.ItemContainerStyle>-->
+            </MenuItem.ItemContainerStyle>
         </MenuItem>
         <MenuItem Header="Optionen"></MenuItem>
         <MenuItem Header="Hilfe">

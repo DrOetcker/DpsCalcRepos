@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Media;
+using DpsCalc.MainApp.Converters;
 using MySql.Data.MySqlClient;
 using Oetcker.Data;
 using Oetcker.Data.DebugData;
@@ -7,6 +9,7 @@ using Oetcker.Database;
 using Oetcker.Gui;
 using Oetcker.Libs.Interfaces;
 using Oetcker.Models.Constants;
+using Oetcker.Models.Converters;
 using Oetcker.Models.Models;
 using Oetcker.ServiceLocation;
 using Prism.Commands;
@@ -111,7 +114,7 @@ namespace DpsCalc.MainApp.ViewModels
         private void GetStats(Item item, MySqlDataReader reader)
         {
             //Armor
-            item.Stats.Add(new StatKeyValuePair<ItemContants.Stat, int>(ItemContants.Stat.Armor, reader.GetInt32("armor")));
+            item.Stats.Add(new StatKeyValuePair<ItemConstants.Stat, int>(ItemConstants.Stat.Armor, reader.GetInt32("armor")));
 
             //Stats
             const string type = "stat_type";
@@ -122,7 +125,7 @@ namespace DpsCalc.MainApp.ViewModels
                 if (redValue == 0)
                     continue;
                 var redType = reader.GetInt32(type + i);
-                item.Stats.Add(new StatKeyValuePair<ItemContants.Stat, int>((ItemContants.Stat)redType, redValue));
+                item.Stats.Add(new StatKeyValuePair<ItemConstants.Stat, int>((ItemConstants.Stat)redType, redValue));
             }
 
             //DMG
@@ -133,12 +136,12 @@ namespace DpsCalc.MainApp.ViewModels
             }
 
             //Resistance
-            item.Stats.Add(new StatKeyValuePair<ItemContants.Stat, int>(ItemContants.Stat.ResistanceArcane, reader.GetInt32("arcane_res")));
-            item.Stats.Add(new StatKeyValuePair<ItemContants.Stat, int>(ItemContants.Stat.ResistanceFire, reader.GetInt32("fire_res")));
-            item.Stats.Add(new StatKeyValuePair<ItemContants.Stat, int>(ItemContants.Stat.ResistanceFrost, reader.GetInt32("frost_res")));
-            item.Stats.Add(new StatKeyValuePair<ItemContants.Stat, int>(ItemContants.Stat.ResistanceHoly, reader.GetInt32("holy_res")));
-            item.Stats.Add(new StatKeyValuePair<ItemContants.Stat, int>(ItemContants.Stat.ResistanceNature, reader.GetInt32("nature_res")));
-            item.Stats.Add(new StatKeyValuePair<ItemContants.Stat, int>(ItemContants.Stat.ResistanceShadow, reader.GetInt32("shadow_res")));
+            item.Stats.Add(new StatKeyValuePair<ItemConstants.Stat, int>(ItemConstants.Stat.ResistanceArcane, reader.GetInt32("arcane_res")));
+            item.Stats.Add(new StatKeyValuePair<ItemConstants.Stat, int>(ItemConstants.Stat.ResistanceFire, reader.GetInt32("fire_res")));
+            item.Stats.Add(new StatKeyValuePair<ItemConstants.Stat, int>(ItemConstants.Stat.ResistanceFrost, reader.GetInt32("frost_res")));
+            item.Stats.Add(new StatKeyValuePair<ItemConstants.Stat, int>(ItemConstants.Stat.ResistanceHoly, reader.GetInt32("holy_res")));
+            item.Stats.Add(new StatKeyValuePair<ItemConstants.Stat, int>(ItemConstants.Stat.ResistanceNature, reader.GetInt32("nature_res")));
+            item.Stats.Add(new StatKeyValuePair<ItemConstants.Stat, int>(ItemConstants.Stat.ResistanceShadow, reader.GetInt32("shadow_res")));
 
             //Spells:
             const string spellidColumn = "spellid_";
@@ -169,6 +172,8 @@ namespace DpsCalc.MainApp.ViewModels
 
         private void OnLoadPlayerCommand(string s)
         {
+            var loadedPlayer = Players.FirstOrDefault(player => player.Name == s);
+            PlayerService.SetCurrentPlayer(loadedPlayer);
         }
 
         private void OnReloadDatabaseCommand()
@@ -208,11 +213,12 @@ namespace DpsCalc.MainApp.ViewModels
                     var item = new Item
                     {
                         Id = reader.GetInt32("entry"),
+                        DisplayId = reader.GetInt32("displayid"),
                         Name = reader.GetString("Name"),
                         Speed = reader.GetInt32("delay"),
-                        Quality = (ItemContants.Quality)quality,
-                        WeaponClass = itemClass != 2 ? 0 : (ItemContants.WeaponClass)itemSubClass,
-                        Type = (ItemContants.ItemType)inventoryType
+                        Quality = (ItemConstants.Quality)quality,
+                        WeaponClass = itemClass != 2 ? 0 : (ItemConstants.WeaponClass)itemSubClass,
+                        Type = itemClass != 2 ? (ItemConstants.ItemType)inventoryType : (inventoryType == 15 || inventoryType == 26 ? ItemConstants.ItemType.Ranged : (ItemConstants.ItemType)inventoryType)
                     };
 
                     GetStats(item, reader);

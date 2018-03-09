@@ -4,13 +4,73 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:viewModel="clr-namespace:DpsCalc.MainApp.ViewModels"
+             xmlns:converters="clr-namespace:DpsCalc.MainApp.Converters"
              xmlns:local="clr-namespace:DpsCalc.MainApp.Views"
+             xmlns:i="clr-namespace:System.Windows.Interactivity"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.DataContext>
         <viewModel:ContentViewModel />
     </UserControl.DataContext>
-    <Grid>
-        <Label Content="{Binding Test}"></Label>
-    </Grid>
+    <UserControl.Resources>
+        <converters:FilterItemsByTypeConverter x:Key="FilterItemsByType"/>
+    </UserControl.Resources>
+    <DockPanel>
+        <Label DockPanel.Dock="Top" Content="{Binding Test}"></Label>
+        <ItemsControl DockPanel.Dock="Bottom" ItemsSource="{Binding CurrentItemSet.PlayerItems}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border BorderThickness="1" BorderBrush="Black" Width="150">
+                        <DockPanel Margin="2" ToolTipService.InitialShowDelay="0">
+                            <DockPanel.ToolTip>
+                                <DockPanel Margin="2">
+                                    <TextBlock DockPanel.Dock="Top" Text="{Binding Name}" TextWrapping="Wrap"
+                                               FontWeight="Bold" Foreground="{Binding QualityColor, Mode=OneWay}"></TextBlock>
+                                    <TextBlock DockPanel.Dock="Top" Text="{Binding Summary, Mode=OneWay}" TextWrapping="Wrap"/>
+                                </DockPanel>
+                            </DockPanel.ToolTip>
+                            <TextBlock DockPanel.Dock="Top" Text="{Binding Name}" TextWrapping="Wrap" Width="150" 
+                                        FontWeight="Bold" Foreground="{Binding QualityColor, Mode=OneWay}"/>
+                            <ComboBox>
+                                <ComboBox.ItemsSource>
+                                    <MultiBinding Converter="{StaticResource FilterItemsByType}">
+                                        <Binding Path="DataContext.AllItems" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}"/>
+                                        <Binding Path="Type"/>
+                                    </MultiBinding>
+                                </ComboBox.ItemsSource>
+                                <ComboBox.ItemContainerStyle>
+                                    <Style TargetType="{x:Type ComboBoxItem}">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate>
+                                                    <DockPanel Margin="2">
+                                                        <TextBlock  DockPanel.Dock="Top" Text="{Binding Name}" TextWrapping="Wrap" Width="150" 
+                                                                    FontWeight="Bold" Foreground="{Binding QualityColor, Mode=OneWay}"/>
+                                                        <TextBlock DockPanel.Dock="Top" Text="{Binding SmallSummary, Mode=OneWay}" TextWrapping="Wrap" Width="150"/>
+                                                        <DockPanel.ToolTip>
+                                                            <DockPanel Margin="2">
+                                                                <TextBlock DockPanel.Dock="Top" Text="{Binding Name}" TextWrapping="Wrap"
+                                                                           FontWeight="Bold" Foreground="{Binding QualityColor, Mode=OneWay}"></TextBlock>
+                                                                <TextBlock DockPanel.Dock="Top" Text="{Binding Summary, Mode=OneWay}" TextWrapping="Wrap"/>
+                                                            </DockPanel>
+                                                        </DockPanel.ToolTip>
+                                                    </DockPanel>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </ComboBox.ItemContainerStyle>
+                            </ComboBox>
+                        </DockPanel>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel></WrapPanel>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+
+    </DockPanel>
 </UserControl>

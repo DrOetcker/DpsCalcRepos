@@ -1,25 +1,8 @@
-﻿using System;
-
-namespace Oetcker.Models.Constants
+﻿namespace Oetcker.Models.Constants
 {
-    public static class ItemContants
+    public static class ItemConstants
     {
-        public enum WeaponSlot
-        {
-            MainHand = 1,
-            OffHand = 2
-        }
-
-        public enum Quality
-        {
-            Poor = 0,
-            Common = 1,
-            Uncommon = 2,
-            Rare = 3,
-            Epic = 4,
-            Legendary = 5,
-            Artifact = 6
-        }
+        #region Enums
 
         public enum ItemType
         {
@@ -46,16 +29,15 @@ namespace Oetcker.Models.Constants
             RangedRight = 26
         }
 
-        public enum WeaponClass
+        public enum Quality
         {
-            NoWeapon = 0,
-            Bow = 2,
-            Gun = 3,
-            Mac = 4,
-            Sword = 7,
-            FistWeapon = 13,
-            Dagger = 15,
-            Crossbow = 18
+            Poor = 0,
+            Common = 1,
+            Uncommon = 2,
+            Rare = 3,
+            Epic = 4,
+            Legendary = 5,
+            Artifact = 6
         }
 
         public enum Stat
@@ -79,5 +61,19 @@ namespace Oetcker.Models.Constants
             ResistanceShadow=21,
             ResistanceArcane=22,
         }
+
+        public enum WeaponClass
+        {
+            NoWeapon = 0,
+            Bow = 2,
+            Gun = 3,
+            Mac = 4,
+            Sword = 7,
+            FistWeapon = 13,
+            Dagger = 15,
+            Crossbow = 18
+        }
+
+        #endregion
     }
 }

@@ -30,6 +30,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -40,12 +42,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Constants\ItemContants.cs" />
+    <Compile Include="Constants\ItemConstants.cs" />
     <Compile Include="Constants\ClassConstants.cs" />
     <Compile Include="Constants\RaceConstants.cs" />
+    <Compile Include="Converters\QualityToColorConverter.cs" />
     <Compile Include="Models\Item.cs" />
     <Compile Include="Models\Player.cs" />
-    <Compile Include="Models\PlayerItem.cs" />
     <Compile Include="Models\PlayerItemSet.cs" />
     <Compile Include="Models\Spell.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

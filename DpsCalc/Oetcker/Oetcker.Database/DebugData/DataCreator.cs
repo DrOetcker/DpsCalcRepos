@@ -13,74 +13,88 @@ namespace Oetcker.Data.DebugData
 
         public static void CreateDebugData()
         {
+            var oetcker = CreatePlayer("Oetcker");
+            var colle = CreatePlayer("Colle");
+            var che = CreatePlayer("Ché");
+            CreateDebugPlayerItemSets(new List<Guid> { oetcker.CurrentItemSet, colle.CurrentItemSet, che.CurrentItemSet});
+            XmlSerializer<List<Player>>.ExportToXml(new List<Player> { oetcker, colle, che }, "Players");
+            ItemService.ResetCache();
+            PlayerService.ResetCache();
+        }
+
+        private static Player CreatePlayer(string name)
+        {
             var currentGuid = Guid.NewGuid();
-            CreateDebugPlayerItemSets(currentGuid);
             var player = new Player
             {
                 Class = ClassConstants.Class.Rogue,
                 Race = RaceConstants.Race.Undead,
-                Name = "Oetcker",
+                Name = name,
                 CurrentItemSet = currentGuid
             };
-            XmlSerializer<List<Player>>.ExportToXml(new List<Player> { player }, "Players");
+            return player;
         }
 
-        private static void CreateDebugPlayerItemSets(Guid currentGuid)
+        private static void CreateDebugPlayerItemSets(List<Guid> currentGuid)
         {
             var allItems = XmlSerializer<List<Item>>.GetContent("Items");
-            var playerItemSets = new List<PlayerItemSet>
+            var rand = new Random(DateTime.Now.Millisecond);
+            var playerItemSets = new List<PlayerItemSet>();
+            currentGuid.ForEach(guid =>
             {
-                new PlayerItemSet
-                {
-                    Name = "Current",
-                    Id = currentGuid,
-                    PlayerItems = new List<Item>
+                playerItemSets.Add(
+                    new PlayerItemSet
                     {
-                        allItems.FirstOrDefault(item => item.Type == ItemContants.ItemType.Head),
-                        allItems.FirstOrDefault(item => item.Type == ItemContants.ItemType.Neck),
-                        allItems.FirstOrDefault(item => item.Type == ItemContants.ItemType.Shoulder),
-                        allItems.FirstOrDefault(item => item.Type == ItemContants.ItemType.Back),
-                        allItems.FirstOrDefault(item => item.Type == ItemContants.ItemType.Chest),
-                        allItems.FirstOrDefault(item => item.Type == ItemContants.ItemType.Wrists),
-                        allItems.FirstOrDefault(item => item.Type == ItemContants.ItemType.Hands),
-                        allItems.FirstOrDefault(item => item.Type == ItemContants.ItemType.Waist),
-                        allItems.FirstOrDefault(item => item.Type == ItemContants.ItemType.Legs),
-                        allItems.FirstOrDefault(item => item.Type == ItemContants.ItemType.Feet),
-                        allItems.FirstOrDefault(item => item.Type == ItemContants.ItemType.Finger),
-                        allItems.FirstOrDefault(item => item.Type == ItemContants.ItemType.Finger),
-                        allItems.FirstOrDefault(item => item.Type == ItemContants.ItemType.Trinket),
-                        allItems.FirstOrDefault(item => item.Type == ItemContants.ItemType.Trinket),
-                        allItems.FirstOrDefault(item => item.Type == ItemContants.ItemType.MainHand),
-                        allItems.FirstOrDefault(item => item.Type == ItemContants.ItemType.OffHand),
-                        allItems.FirstOrDefault(item => item.Type == ItemContants.ItemType.Ranged)
-                    }
-                },
-                new PlayerItemSet
-                {
-                    Name = "End",
-                    Id = Guid.NewGuid(),
-                    PlayerItems = new List<Item>
+                        Name = "Current",
+                        Id = guid,
+                        PlayerItems = new List<Item>
+                        {
+                            allItems.Where(item => item.Type == ItemConstants.ItemType.Head).ToList()[rand.Next(0, allItems.Where(item => item.Type == ItemConstants.ItemType.Head).ToList().Count - 1)],
+                            allItems.Where(item => item.Type == ItemConstants.ItemType.Neck).ToList()[rand.Next(0, allItems.Where(item => item.Type == ItemConstants.ItemType.Neck).ToList().Count - 1)],
+                            allItems.Where(item => item.Type == ItemConstants.ItemType.Shoulder).ToList()[rand.Next(0, allItems.Where(item => item.Type == ItemConstants.ItemType.Shoulder).ToList().Count - 1)],
+                            allItems.Where(item => item.Type == ItemConstants.ItemType.Back).ToList()[rand.Next(0, allItems.Where(item => item.Type == ItemConstants.ItemType.Back).ToList().Count - 1)],
+                            allItems.Where(item => item.Type == ItemConstants.ItemType.Chest).ToList()[rand.Next(0, allItems.Where(item => item.Type == ItemConstants.ItemType.Chest).ToList().Count - 1)],
+                            allItems.Where(item => item.Type == ItemConstants.ItemType.Wrists).ToList()[rand.Next(0, allItems.Where(item => item.Type == ItemConstants.ItemType.Wrists).ToList().Count - 1)],
+                            allItems.Where(item => item.Type == ItemConstants.ItemType.Hands).ToList()[rand.Next(0, allItems.Where(item => item.Type == ItemConstants.ItemType.Hands).ToList().Count - 1)],
+                            allItems.Where(item => item.Type == ItemConstants.ItemType.Waist).ToList()[rand.Next(0, allItems.Where(item => item.Type == ItemConstants.ItemType.Waist).ToList().Count - 1)],
+                            allItems.Where(item => item.Type == ItemConstants.ItemType.Legs).ToList()[rand.Next(0, allItems.Where(item => item.Type == ItemConstants.ItemType.Legs).ToList().Count - 1)],
+                            allItems.Where(item => item.Type == ItemConstants.ItemType.Feet).ToList()[rand.Next(0, allItems.Where(item => item.Type == ItemConstants.ItemType.Feet).ToList().Count - 1)],
+                            allItems.Where(item => item.Type == ItemConstants.ItemType.Finger).ToList()[rand.Next(0, allItems.Where(item => item.Type == ItemConstants.ItemType.Finger).ToList().Count - 1)],
+                            allItems.Where(item => item.Type == ItemConstants.ItemType.Finger).ToList()[rand.Next(0, allItems.Where(item => item.Type == ItemConstants.ItemType.Finger).ToList().Count - 1)],
+                            allItems.Where(item => item.Type == ItemConstants.ItemType.Trinket).ToList()[rand.Next(0, allItems.Where(item => item.Type == ItemConstants.ItemType.Trinket).ToList().Count - 1)],
+                            allItems.Where(item => item.Type == ItemConstants.ItemType.Trinket).ToList()[rand.Next(0, allItems.Where(item => item.Type == ItemConstants.ItemType.Trinket).ToList().Count - 1)],
+                            allItems.Where(item => item.Type == ItemConstants.ItemType.MainHand).ToList()[rand.Next(0, allItems.Where(item => item.Type == ItemConstants.ItemType.MainHand).ToList().Count - 1)],
+                            allItems.Where(item => item.Type == ItemConstants.ItemType.OffHand).ToList()[rand.Next(0, allItems.Where(item => item.Type == ItemConstants.ItemType.OffHand).ToList().Count - 1)],
+                            allItems.Where(item => item.Type == ItemConstants.ItemType.Ranged).ToList()[rand.Next(0, allItems.Where(item => item.Type == ItemConstants.ItemType.Ranged).ToList().Count - 1)]
+                        }
+                    });
+                playerItemSets.Add(
+                    new PlayerItemSet
                     {
-                        allItems.LastOrDefault(item => item.Type == ItemContants.ItemType.Head),
-                        allItems.LastOrDefault(item => item.Type == ItemContants.ItemType.Neck),
-                        allItems.LastOrDefault(item => item.Type == ItemContants.ItemType.Shoulder),
-                        allItems.LastOrDefault(item => item.Type == ItemContants.ItemType.Back),
-                        allItems.LastOrDefault(item => item.Type == ItemContants.ItemType.Chest),
-                        allItems.LastOrDefault(item => item.Type == ItemContants.ItemType.Wrists),
-                        allItems.LastOrDefault(item => item.Type == ItemContants.ItemType.Hands),
-                        allItems.LastOrDefault(item => item.Type == ItemContants.ItemType.Waist),
-                        allItems.LastOrDefault(item => item.Type == ItemContants.ItemType.Legs),
-                        allItems.LastOrDefault(item => item.Type == ItemContants.ItemType.Feet),
-                        allItems.LastOrDefault(item => item.Type == ItemContants.ItemType.Finger),
-                        allItems.LastOrDefault(item => item.Type == ItemContants.ItemType.Finger),
-                        allItems.LastOrDefault(item => item.Type == ItemContants.ItemType.Trinket),
-                        allItems.LastOrDefault(item => item.Type == ItemContants.ItemType.Trinket),
-                        allItems.LastOrDefault(item => item.Type == ItemContants.ItemType.MainHand),
-                        allItems.LastOrDefault(item => item.Type == ItemContants.ItemType.OffHand),
-                        allItems.LastOrDefault(item => item.Type == ItemContants.ItemType.Ranged)
-                    }
-                }
-            };
+                        Name = "End",
+                        Id = Guid.NewGuid(),
+                        PlayerItems = new List<Item>
+                        {
+                            allItems.Where(item => item.Type == ItemConstants.ItemType.Head).ToList()[rand.Next(0, allItems.Where(item => item.Type == ItemConstants.ItemType.Head).ToList().Count - 1)],
+                            allItems.Where(item => item.Type == ItemConstants.ItemType.Neck).ToList()[rand.Next(0, allItems.Where(item => item.Type == ItemConstants.ItemType.Neck).ToList().Count - 1)],
+                            allItems.Where(item => item.Type == ItemConstants.ItemType.Shoulder).ToList()[rand.Next(0, allItems.Where(item => item.Type == ItemConstants.ItemType.Shoulder).ToList().Count - 1)],
+                            allItems.Where(item => item.Type == ItemConstants.ItemType.Back).ToList()[rand.Next(0, allItems.Where(item => item.Type == ItemConstants.ItemType.Back).ToList().Count - 1)],
+                            allItems.Where(item => item.Type == ItemConstants.ItemType.Chest).ToList()[rand.Next(0, allItems.Where(item => item.Type == ItemConstants.ItemType.Chest).ToList().Count - 1)],
+                            allItems.Where(item => item.Type == ItemConstants.ItemType.Wrists).ToList()[rand.Next(0, allItems.Where(item => item.Type == ItemConstants.ItemType.Wrists).ToList().Count - 1)],
+                            allItems.Where(item => item.Type == ItemConstants.ItemType.Hands).ToList()[rand.Next(0, allItems.Where(item => item.Type == ItemConstants.ItemType.Hands).ToList().Count - 1)],
+                            allItems.Where(item => item.Type == ItemConstants.ItemType.Waist).ToList()[rand.Next(0, allItems.Where(item => item.Type == ItemConstants.ItemType.Waist).ToList().Count - 1)],
+                            allItems.Where(item => item.Type == ItemConstants.ItemType.Legs).ToList()[rand.Next(0, allItems.Where(item => item.Type == ItemConstants.ItemType.Legs).ToList().Count - 1)],
+                            allItems.Where(item => item.Type == ItemConstants.ItemType.Feet).ToList()[rand.Next(0, allItems.Where(item => item.Type == ItemConstants.ItemType.Feet).ToList().Count - 1)],
+                            allItems.Where(item => item.Type == ItemConstants.ItemType.Finger).ToList()[rand.Next(0, allItems.Where(item => item.Type == ItemConstants.ItemType.Finger).ToList().Count - 1)],
+                            allItems.Where(item => item.Type == ItemConstants.ItemType.Finger).ToList()[rand.Next(0, allItems.Where(item => item.Type == ItemConstants.ItemType.Finger).ToList().Count - 1)],
+                            allItems.Where(item => item.Type == ItemConstants.ItemType.Trinket).ToList()[rand.Next(0, allItems.Where(item => item.Type == ItemConstants.ItemType.Trinket).ToList().Count - 1)],
+                            allItems.Where(item => item.Type == ItemConstants.ItemType.Trinket).ToList()[rand.Next(0, allItems.Where(item => item.Type == ItemConstants.ItemType.Trinket).ToList().Count - 1)],
+                            allItems.Where(item => item.Type == ItemConstants.ItemType.MainHand).ToList()[rand.Next(0, allItems.Where(item => item.Type == ItemConstants.ItemType.MainHand).ToList().Count - 1)],
+                            allItems.Where(item => item.Type == ItemConstants.ItemType.OffHand).ToList()[rand.Next(0, allItems.Where(item => item.Type == ItemConstants.ItemType.OffHand).ToList().Count - 1)],
+                            allItems.Where(item => item.Type == ItemConstants.ItemType.Ranged).ToList()[rand.Next(0, allItems.Where(item => item.Type == ItemConstants.ItemType.Ranged).ToList().Count - 1)]
+                        }
+                    });
+            });
             XmlSerializer<List<PlayerItemSet>>.ExportToXml(playerItemSets, "PlayerItemSets");
         }
 

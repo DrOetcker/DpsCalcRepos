@@ -30,6 +30,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,6 +46,12 @@
     <Compile Include="ServiceLocation\IServiceLocator.cs" />
     <Compile Include="ServiceLocation\ServiceLocator.cs" />
     <Compile Include="ServiceLocation\ServiceLocatorException.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Oetcker.Models\Oetcker.Models.csproj">
+      <Project>{7663FF03-8B06-461F-8E6B-156FB5DEEC88}</Project>
+      <Name>Oetcker.Models</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

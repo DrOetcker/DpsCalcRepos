@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
@@ -38,8 +37,6 @@ namespace Oetcker.Data
 
             using (var reader = XmlReader.Create($@"Data\{fileName}.xml"))
             {
-                if (null == reader)
-                    throw new Exception("No SiriusCertifiedArticle.xml found.");
                 var serializer = new XmlSerializer(typeof(T));
                 return (T)serializer.Deserialize(reader);
             }
