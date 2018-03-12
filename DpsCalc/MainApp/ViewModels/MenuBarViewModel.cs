@@ -3,6 +3,7 @@ using System.Linq;
 using MySql.Data.MySqlClient;
 using Oetcker.Data;
 using Oetcker.Data.DebugData;
+using Oetcker.Data.Services;
 using Oetcker.Database;
 using Oetcker.Gui;
 using Oetcker.Libs.Interfaces;
@@ -75,7 +76,7 @@ namespace DpsCalc.MainApp.ViewModels
                     continue;
                 item.Spells = item.Spells.Select(sp =>
                 {
-                    var foundSpell = spells.FirstOrDefault(spell => spell.Id == sp.Id);
+                    var foundSpell = spells.FirstOrDefault(spell => spell.SpellIdent == sp.SpellIdent);
                     return foundSpell;
                 }).ToList();
             }
@@ -93,7 +94,7 @@ namespace DpsCalc.MainApp.ViewModels
             {
                 while (reader.Read())
                 {
-                    var id = reader.GetInt32("Id");
+                    var id = reader.GetInt32("id");
                     var name = reader.GetString(nameColumn);
                     for (var i = 1; i <= 3; i++)
                     {
@@ -125,13 +126,6 @@ namespace DpsCalc.MainApp.ViewModels
                 item.Stats.Add(new StatKeyValuePair<ItemConstants.Stat, int>((ItemConstants.Stat)redType, redValue));
             }
 
-            //DMG
-            if (item.IsWeapon())
-            {
-                item.DmgMin = reader.GetInt32("dmg_min1");
-                item.DmgMax = reader.GetInt32("dmg_max1");
-            }
-
             //Resistance
             item.Stats.Add(new StatKeyValuePair<ItemConstants.Stat, int>(ItemConstants.Stat.ResistanceArcane, reader.GetInt32("arcane_res")));
             item.Stats.Add(new StatKeyValuePair<ItemConstants.Stat, int>(ItemConstants.Stat.ResistanceFire, reader.GetInt32("fire_res")));
@@ -158,7 +152,7 @@ namespace DpsCalc.MainApp.ViewModels
 
         private void LoadPlayerFiles()
         {
-            Players = XmlSerializer<List<Player>>.GetContent("Players");
+            Players = PlayerService.GetPlayers();
             RaisePropertyChanged(() => Players);
 
         }
@@ -187,7 +181,14 @@ namespace DpsCalc.MainApp.ViewModels
 
             var dbService = ServiceLocator.Current.GetInstance<IDatabaseService>();
             var conn = dbService.GetDbConnection();
+
+            //Spells
             var spells = GetSpellsContent(conn);
+            SpellService.WriteSpells(spells);
+
+
+
+
             var query = "SELECT * FROM item_template";
             var cmd = new MySqlCommand(query, conn.Connection);
             var result = new List<Item>();
@@ -209,8 +210,8 @@ namespace DpsCalc.MainApp.ViewModels
                         continue;
                     var item = new Item
                     {
-                        Id = reader.GetInt32("entry"),
-                        DisplayId = reader.GetInt32("displayid"),
+                        ItemIdent = reader.GetInt32("entry"),
+                        DisplayIdent = reader.GetInt32("displayid"),
                         Name = reader.GetString("Name"),
                         Speed = reader.GetInt32("delay"),
                         Quality = (ItemConstants.Quality)quality,
@@ -218,12 +219,22 @@ namespace DpsCalc.MainApp.ViewModels
                         Type = itemClass != 2 ? (ItemConstants.ItemType)inventoryType : (inventoryType == 15 || inventoryType == 26 ? ItemConstants.ItemType.Ranged : (ItemConstants.ItemType)inventoryType)
                     };
 
+                    //DMG
+                    if (item.IsWeapon())
+                    {
+                        item.DmgMin = reader.GetInt32("dmg_min1");
+                        item.DmgMax = reader.GetInt32("dmg_max1");
+                    }
+
                     GetStats(item, reader);
                     result.Add(item);
                 }
 
             }
             GetSpells(result, spells);
+            var items = ItemService.WriteItems(result);
+
+
             XmlSerializer<List<Item>>.ExportToXml(result, "Items");
             ItemService.ResetCache();
             dbService.ConnectionChange?.Invoke();

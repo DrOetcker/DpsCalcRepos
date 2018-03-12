@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oetcker.Models.Models
 {
@@ -7,8 +9,9 @@ namespace Oetcker.Models.Models
     {
         #region Properties
 
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; }
-        public List<Item> PlayerItems { get; set; }
+        public IList<Item> PlayerItems { get; set; }
         public string Name { get; set; }
 
         #endregion

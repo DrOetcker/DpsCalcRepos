@@ -23,7 +23,15 @@ namespace Oetcker.Data
 
         public static List<Item> GetAllItems()
         {
-            return _items ?? (_items = XmlSerializer<List<Item>>.GetContent("Items").OrderBy(item => item.Name).ToList());
+            return _items ?? (_items = ItemService.GetAllItemsFromDatabase().OrderBy(item => item.Name).ToList());
+        }
+
+        private static List<Item> GetAllItemsFromDatabase()
+        {
+            using (var dbContext = new Database())
+            {
+                return dbContext.Items.ToList().ToList();
+            }
         }
 
         public static void ResetCache()
@@ -32,5 +40,16 @@ namespace Oetcker.Data
         }
 
         #endregion
+
+        public static List<Item> WriteItems(List<Item> items)
+        {
+            using (var dbContext = new Database())
+            {
+                dbContext.Items.RemoveRange(dbContext.Items);
+                dbContext.Items.AddRange(items);
+                dbContext.SaveChanges();
+                return dbContext.Items.ToList();
+            }
+        }
     }
 }

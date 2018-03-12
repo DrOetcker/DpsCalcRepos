@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Windows.Media;
 using System.Xml.Serialization;
@@ -21,16 +23,16 @@ namespace Oetcker.Models.Models
         [XmlElement(ElementName = "dma")]
         public double DmgMax { get; set; }
 
-        public double Dps => Math.Round((DmgMax + DmgMin) / 2 / (Speed / 1000), 1,MidpointRounding.AwayFromZero);
-
         [XmlElement(ElementName = "s")]
         public double Speed { get; set; }
 
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         [XmlElement(ElementName = "id")]
-        public int Id { get; set; }
+        public int ItemIdent { get; set; }
 
         [XmlElement(ElementName = "did")]
-        public int DisplayId { get; set; }
+        public int DisplayIdent { get; set; }
+
 
         [XmlElement(ElementName = "n")]
         public string Name { get; set; }
@@ -40,6 +42,8 @@ namespace Oetcker.Models.Models
 
         [XmlElement(ElementName = "dmi")]
         public double DmgMin { get; set; }
+
+        public double Dps => Math.Round((DmgMax + DmgMin) / 2 / (Speed / 1000), 1,MidpointRounding.AwayFromZero);
 
 
         [XmlElement(ElementName = "wc")]
@@ -86,7 +90,7 @@ namespace Oetcker.Models.Models
                    (Math.Abs(Speed) < double.Epsilon ? string.Empty : $"Speed:\t{Speed / 1000}\r\n") +
                    (Math.Abs(DmgMin) < double.Epsilon || Math.Abs(DmgMin) < double.Epsilon ? string.Empty : $"DPS:\t({Dps} damage per second)\r\n") +
                    $"Stats:{string.Join("", Stats.Select(st => (st.Value == 0) ? string.Empty : (st.Key == ItemConstants.Stat.Armor ? $"{st.Value} {st.Key}\r\n" : $"+ {st.Value} {st.Key}\r\n")))}" +
-                   $"Spells:\t{string.Join("\r\n\t", Spells.Select(sp => $"ID: {sp.Id} - Name: {sp.Name} - Aura: {sp.EffectAura} - BasePoints: {sp.EffectBasePoints}"))}\r\n" +
+                   $"Spells:\t{string.Join("\r\n\t", Spells.Select(sp => $"ID: {sp.SpellIdent} - Name: {sp.Name} - Aura: {sp.EffectAura} - BasePoints: {sp.EffectBasePoints}"))}\r\n" +
                    $"Quality:\t{Quality}\r\n\r\n\r\n";
         }
 

@@ -1,4 +1,7 @@
-﻿using System.Xml.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Security.Policy;
+using System.Xml.Serialization;
 
 namespace Oetcker.Models.Models
 {
@@ -12,17 +15,17 @@ namespace Oetcker.Models.Models
         }
 
 
-        public Spell(int spellId, string name, int effectAura, int effectBasePoints)
+        public Spell(int spellSpellIdent, string name, int effectAura, int effectBasePoints)
         {
-            Id = spellId;
+            SpellIdent = spellSpellIdent;
             Name = name;
             EffectAura = effectAura;
             EffectBasePoints = effectBasePoints;
         }
 
-        public Spell(int spellId)
+        public Spell(int spellSpellIdent)
         {
-            Id = spellId;
+            SpellIdent = spellSpellIdent;
         }
 
         #endregion
@@ -32,6 +35,8 @@ namespace Oetcker.Models.Models
         [XmlElement(ElementName = "ebp")]
         public int EffectBasePoints { get; set; }
 
+        public int Id { get; set; }
+
         [XmlElement(ElementName = "ea")]
         public int EffectAura { get; set; }
 
@@ -40,7 +45,7 @@ namespace Oetcker.Models.Models
         public string Name { get; set; }
 
         [XmlElement(ElementName = "id")]
-        public int Id { get; set; }
+        public int SpellIdent { get; set; }
 
         #endregion
     }

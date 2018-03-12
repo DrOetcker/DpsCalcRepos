@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oetcker.Models.Models
 {
@@ -8,8 +8,11 @@ namespace Oetcker.Models.Models
         #region Properties
 
         public Constants.ClassConstants.Class Class { get; set; }
-        public Guid CurrentItemSet { get; set; }
+        public PlayerItemSet CurrentItemSet { get; set; }
+
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public string Name { get; set; }
+
         public Constants.RaceConstants.Race Race { get; set; }
 
         #endregion

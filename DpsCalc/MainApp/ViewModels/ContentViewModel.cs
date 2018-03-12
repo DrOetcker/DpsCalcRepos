@@ -87,7 +87,7 @@ namespace DpsCalc.MainApp.ViewModels
             var rand = new Random(DateTime.Now.Millisecond);
             Test += AllItems[rand.Next(0, AllItems.Count - 1)].ToString();
             Test += AllItems[rand.Next(0, AllItems.Count - 1)].ToString();
-            Test += AllItems.First(item => item.Id == 18823).ToString();
+            Test += AllItems.First(item => item.ItemIdent == 18823).ToString();
         }
 
         private void OnPlayerChanged(Player player)
@@ -95,7 +95,7 @@ namespace DpsCalc.MainApp.ViewModels
             if (null == player)
                 return;
             CurrentPlayer = player;
-            CurrentItemSet = ItemService.GetCurrentItemSet(player.CurrentItemSet);
+            CurrentItemSet = player.CurrentItemSet;
             Test = player.Name + Environment.NewLine;
             Test += CurrentItemSet.Name + Environment.NewLine;
             //currentItemSet.PlayerItems.ForEach(pi => { Test += pi.ToString(); });

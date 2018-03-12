@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using Oetcker.Models.Models;
 
@@ -37,8 +38,10 @@ namespace Oetcker.Data
         /// <returns></returns>
         public static List<Player> GetPlayers()
         {
-            _players = XmlSerializer<List<Player>>.GetContent("Players");
-            return _players;
+            using (var dbContext = new Database())
+            {
+                return dbContext.Players.Include("CurrentItemSet.PlayerItems").ToList();
+            }
         }
 
         public static void ResetCache()
@@ -54,7 +57,7 @@ namespace Oetcker.Data
         public static Player SetCurrentPlayer(Player player)
         {
             if (null == _players)
-                _players = XmlSerializer<List<Player>>.GetContent("Players");
+                _players = GetPlayers();
             _currentPlayer = _players.FirstOrDefault(p => p.Name == player.Name);
             if (null == _currentPlayer)
                 return null;
@@ -63,5 +66,19 @@ namespace Oetcker.Data
         }
 
         #endregion
+
+        public static Player WritePlayer(Player createPlayer)
+        {
+            using (var dbContext = new Database())
+            {
+                foreach (var playerItem in createPlayer.CurrentItemSet.PlayerItems)
+                {
+                    dbContext.Items.Attach(playerItem);
+                }
+                dbContext.Players.AddOrUpdate(createPlayer);
+                dbContext.SaveChanges();
+                return dbContext.Players.FirstOrDefault(player => player.Name == createPlayer.Name);
+            }
+        }
     }
 }
