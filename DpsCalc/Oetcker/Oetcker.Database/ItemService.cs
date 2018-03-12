@@ -23,7 +23,7 @@ namespace Oetcker.Data
 
         public static List<Item> GetAllItems()
         {
-            return _items ?? (_items = XmlSerializer<List<Item>>.GetContent("Items"));
+            return _items ?? (_items = XmlSerializer<List<Item>>.GetContent("Items").OrderBy(item => item.Name).ToList());
         }
 
         public static void ResetCache()

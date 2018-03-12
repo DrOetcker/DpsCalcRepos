@@ -23,10 +23,12 @@ namespace DpsCalc.MainApp.Converters
         {
             if (values.Count() != 2)
                 return Enumerable.Empty<Item>();
+            if (!(values[0] is List<Item> items))
+                return Enumerable.Empty<Item>();
+            if (!(values[1] is ItemConstants.ItemType))
+                return values[0];
             var itemType = (ItemConstants.ItemType?)values[1];
             if (null == itemType)
-                return Enumerable.Empty<Item>();
-            if (!(values[0] is List<Item> items))
                 return Enumerable.Empty<Item>();
             return items.Where(item => item.Type == itemType);
         }

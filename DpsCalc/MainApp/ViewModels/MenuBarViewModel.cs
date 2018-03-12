@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Media;
-using DpsCalc.MainApp.Converters;
 using MySql.Data.MySqlClient;
 using Oetcker.Data;
 using Oetcker.Data.DebugData;
@@ -9,7 +7,6 @@ using Oetcker.Database;
 using Oetcker.Gui;
 using Oetcker.Libs.Interfaces;
 using Oetcker.Models.Constants;
-using Oetcker.Models.Converters;
 using Oetcker.Models.Models;
 using Oetcker.ServiceLocation;
 using Prism.Commands;

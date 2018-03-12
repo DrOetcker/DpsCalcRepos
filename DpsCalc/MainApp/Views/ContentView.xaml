@@ -21,7 +21,7 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Border BorderThickness="1" BorderBrush="Black" Width="150">
-                        <DockPanel Margin="2" ToolTipService.InitialShowDelay="0">
+                        <DockPanel Margin="2" ToolTipService.InitialShowDelay="0" Tag="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Border}}, Path=DataContext.Type, Mode=OneTime}">
                             <DockPanel.ToolTip>
                                 <DockPanel Margin="2">
                                     <TextBlock DockPanel.Dock="Top" Text="{Binding Name}" TextWrapping="Wrap"
@@ -31,11 +31,11 @@
                             </DockPanel.ToolTip>
                             <TextBlock DockPanel.Dock="Top" Text="{Binding Name}" TextWrapping="Wrap" Width="150" 
                                         FontWeight="Bold" Foreground="{Binding QualityColor, Mode=OneWay}"/>
-                            <ComboBox>
+                            <ComboBox SelectedItem="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type DockPanel}}, Path=DataContext, Mode=TwoWay}">
                                 <ComboBox.ItemsSource>
                                     <MultiBinding Converter="{StaticResource FilterItemsByType}">
                                         <Binding Path="DataContext.AllItems" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}"/>
-                                        <Binding Path="Type"/>
+                                        <Binding Path="Tag" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type DockPanel}}"/>
                                     </MultiBinding>
                                 </ComboBox.ItemsSource>
                                 <ComboBox.ItemContainerStyle>
